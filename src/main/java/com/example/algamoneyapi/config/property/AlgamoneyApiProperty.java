@@ -10,7 +10,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 public class AlgamoneyApiProperty {
 	
 	//pertmir acesso a porta de forma externa
-	private String originPermitida = "http://localhost:8080";
+	private String originPermitida = getOriginPermitida();
 	
 	private final Seguranca seguranca = new Seguranca ();
 	
