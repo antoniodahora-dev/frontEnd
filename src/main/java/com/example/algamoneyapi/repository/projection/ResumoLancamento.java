@@ -19,7 +19,7 @@ public class ResumoLancamento {
 	private String categoria;	
 	private String pessoa;
 	
-	// iremos utilizar para seja realizada a consulta	
+	// iremos utilizar para que seja realizada a consulta	
 	public ResumoLancamento(Long codigo, String descricao, LocalDate dataVencimento, LocalDate datapagamento,
 			BigDecimal valor, TipoLancamento tipo, String categoria, String pessoa) {
 		super();
