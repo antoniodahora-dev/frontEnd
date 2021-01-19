@@ -31,6 +31,7 @@ public class Lancamento {
 	@Column(name = "data_vencimento")
 	private LocalDate dataVencimento;
 	
+	
 	@Column(name = "data_pagamento")
 	private LocalDate datapagamento;
 	
