@@ -59,11 +59,13 @@ public class LancamentoResource {
 	}
 	
 	@GetMapping(params = "resumo")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')") // libera autorizacao via BD + Scope para o usuario
 	public Page<ResumoLancamento> resumir(LancamentoFilter lancamentoFilter, Pageable pageable){
 		return lancamentoRepository.resumir(lancamentoFilter, pageable);
 	}
 	
 	@GetMapping("/{codigo}")
+	@PreAuthorize("hasAuthority('ROLE_PESQUISAR_LANCAMENTO') and #oauth2.hasScope('read')") // libera autorizacao via BD + Scope para o usuario
 	public ResponseEntity<Lancamento> buscarPeloCodigo(@PathVariable Long codigo){
 		Optional<Lancamento> lancamento = this.lancamentoRepository.findById(codigo);
 		return lancamento.isPresent() ? ResponseEntity.ok(lancamento.get()):
@@ -71,6 +73,7 @@ public class LancamentoResource {
 	}
 	
 	@PostMapping
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO') and #oauth2.hasScope('write')") // libera autorizacao via BD + Scope para o usuario
 	public ResponseEntity<Lancamento> criarLancamento(@Valid @RequestBody Lancamento lancamento, HttpServletResponse response){
 		Lancamento lancamentoSalvo = lancamentoService.salvar(lancamento);
 		publisher.publishEvent(new RecursoCriadoEvent(this, response, lancamentoSalvo.getCodigo()));
@@ -87,6 +90,7 @@ public class LancamentoResource {
 	
 	@DeleteMapping("/{codigo}")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAuthority('ROLE_REMOVER_LANCAMENTO') and #oauth2.hasScope('write')") // libera autorizacao via BD + Scope para o usuario
 	public void remover(@PathVariable long codigo) {
 		lancamentoRepository.deleteById(codigo);
 	}
@@ -94,7 +98,7 @@ public class LancamentoResource {
 	
 	//metodo para realizar alterar lancamento de cadastro
 	@PutMapping("/{codigo}")
-	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')")
+	@PreAuthorize("hasAuthority('ROLE_CADASTRAR_LANCAMENTO')  and #oauth2.hasScope('read')")
 	public ResponseEntity<Lancamento> atualizar(@PathVariable Long codigo, @Valid @RequestBody Lancamento lancamento) {
 		
 		try {
