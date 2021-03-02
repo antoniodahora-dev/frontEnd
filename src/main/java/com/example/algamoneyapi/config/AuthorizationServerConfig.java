@@ -48,7 +48,7 @@ public class AuthorizationServerConfig  extends AuthorizationServerConfigurerAda
 				.scopes("read") //além da permissão de usuario via BD, podemos adicionar permissao pelo scope.
 				.authorizedGrantTypes("password", "refresh_token")
 				.accessTokenValiditySeconds(20)//1800
-				.refreshTokenValiditySeconds(20);// 3600 * 24
+				.refreshTokenValiditySeconds(3600 * 24);// 3600 * 24
 	}
 	
 	@Override
