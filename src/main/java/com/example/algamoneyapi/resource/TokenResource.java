@@ -6,7 +6,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,7 +14,6 @@ import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @RestController
 @RequestMapping("/tokens")
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
 public class TokenResource {
 	
 	//iremos adicionar para que possamos alterar o false para True
