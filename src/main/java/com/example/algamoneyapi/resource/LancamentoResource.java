@@ -39,7 +39,6 @@ import com.example.algamoneyapi.service.exception.PessoaInexistenteOuInativaExce
 
 @RestController
 @RequestMapping("/lancamento")
-@CrossOrigin("http://localhost:4200")
 public class LancamentoResource {
 	
 	@Autowired

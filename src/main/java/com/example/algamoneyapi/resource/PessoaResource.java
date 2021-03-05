@@ -32,7 +32,6 @@ import com.example.algamoneyapi.service.PessoaService;
 
 @RestController
 @RequestMapping("/pessoas")
-@CrossOrigin("http://localhost:4200")
 public class PessoaResource {
 
 	@Autowired
