@@ -15,7 +15,7 @@ import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @RestController
 @RequestMapping("/tokens")
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
+@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com/")
 public class TokenResource {
 	
 	//iremos adicionar para que possamos alterar o false para True

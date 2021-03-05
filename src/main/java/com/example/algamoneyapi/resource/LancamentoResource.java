@@ -39,7 +39,7 @@ import com.example.algamoneyapi.service.exception.PessoaInexistenteOuInativaExce
 
 @RestController
 @RequestMapping("/lancamento")
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
+@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com/")
 public class LancamentoResource {
 	
 	@Autowired
