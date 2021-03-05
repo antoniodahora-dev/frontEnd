@@ -32,7 +32,7 @@ import com.example.algamoneyapi.service.PessoaService;
 
 @RestController
 @RequestMapping("/pessoas")
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com/")
+@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
 public class PessoaResource {
 
 	@Autowired

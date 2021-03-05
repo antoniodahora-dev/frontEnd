@@ -25,7 +25,7 @@ import com.example.algamoneyapi.repository.CategoriaRepository;
 
 @RestController
 @RequestMapping("/categoria")
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com/")
+@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
 public class CategoriaResource {
 
 	@Autowired
