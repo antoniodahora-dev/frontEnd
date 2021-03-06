@@ -21,7 +21,7 @@ import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@CrossOrigin("https://projeto-algamoney-ui.herokuapp.com")
+@CrossOrigin("http://localhost:4200")
 public class CorsFilter implements Filter {
 
 	//private String originPermitida = "http://localhost:8000"; //TODO: Configurar para diferentes ambientes
