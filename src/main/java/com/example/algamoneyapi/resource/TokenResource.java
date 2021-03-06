@@ -15,7 +15,6 @@ import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @RestController
 @RequestMapping("/tokens")
-@CrossOrigin("http://localhost:4200")
 public class TokenResource {
 	
 	//iremos adicionar para que possamos alterar o false para True

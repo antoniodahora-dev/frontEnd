@@ -21,7 +21,6 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseBodyAdvice;
 import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @ControllerAdvice
-@CrossOrigin("http://localhost:4200")
 public class RefreshTokenPostProcessor implements ResponseBodyAdvice<OAuth2AccessToken> {
 
 	@Autowired
