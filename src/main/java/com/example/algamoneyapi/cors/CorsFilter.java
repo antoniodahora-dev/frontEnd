@@ -15,13 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.stereotype.Component;
-import org.springframework.web.bind.annotation.CrossOrigin;
 
 import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
 
 @Component
 @Order(Ordered.HIGHEST_PRECEDENCE)
-@CrossOrigin("http://localhost:4200")
+//@CrossOrigin("http://localhost:4200")
 public class CorsFilter implements Filter {
 
 	//private String originPermitida = "http://localhost:8000"; //TODO: Configurar para diferentes ambientes
