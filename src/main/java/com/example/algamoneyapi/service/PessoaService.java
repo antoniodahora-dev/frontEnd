@@ -14,10 +14,27 @@ public class PessoaService {
 	@Autowired
 	private PessoaRepository pessoaRepository;
 
+	//iremos pegar o contato da pessoa 
+	/*public Pessoa salvar(Pessoa pessoa) {
+		
+		pessoa.getContatos().forEach(c -> c.setPessoa(pessoa));
+		return pessoaRepository.save(pessoa);
+	}*/
+	
+	
 	public Pessoa atualizar(Long codigo, Pessoa pessoa) {
-				
+
 		Pessoa pessoaSalva = buscarPessoaPeloCodigo(codigo);
-		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo");
+		
+		//iremos a instancia
+		pessoaSalva.getContatos().clear();
+		
+		//iremos adicionar todos os contatos da pessoa que esta vindo com parametro
+		pessoaSalva.getContatos().addAll(pessoa.getContatos());
+		
+		pessoaSalva.getContatos().forEach(c -> c.setPessoa(pessoaSalva));
+		
+		BeanUtils.copyProperties(pessoa, pessoaSalva, "codigo" , "contatos");
 		
 		return pessoaRepository.save(pessoaSalva);
 	}

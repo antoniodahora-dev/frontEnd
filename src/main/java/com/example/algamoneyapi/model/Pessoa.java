@@ -1,15 +1,21 @@
 package com.example.algamoneyapi.model;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 
 @Entity
@@ -29,6 +35,12 @@ public class Pessoa {
 	@NotNull
 	private Boolean ativo;
 
+
+	@JsonIgnoreProperties("pessoa")// ignora o propriedade pessoa da Class de Contatos
+	@Valid //para validar se a lista de pessoa e uma lista valida
+	@OneToMany(mappedBy =  "pessoa" , cascade = CascadeType.ALL, orphanRemoval = true) // ira mapear o atributo pessoa na classe de contatos
+	private List<Contato> contatos;
+	
 		
 	public Long getCodigo() {
 		return codigo;
@@ -62,14 +74,22 @@ public class Pessoa {
 	public void setEndereco(Endereco endereco) {
 		this.endereco = endereco;
 	}
-	
+		
+	public List<Contato> getContatos() {
+		return contatos;
+	}
+
+	public void setContatos(List<Contato> contatos) {
+		this.contatos = contatos;
+	}
+
 	@JsonIgnore
 	@Transient
 	public boolean isInativo(){
 		return !this.ativo;
 	}
 	
-	
+		
 	@Override
 	public int hashCode() {
 		final int prime = 31;

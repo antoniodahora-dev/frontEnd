@@ -1,6 +1,8 @@
 package com.example.algamoneyapi.model;
 
 import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 
 @Embeddable
 public class Endereco {
@@ -10,11 +12,12 @@ public class Endereco {
 	private String complemento;
 	private String bairro;
 	private String cep;
-	private String cidade;
-	private String estado;
+	//private String cidade; ao inves de usar as propriedades cidade e estado iremos utilizar apenas cidade
+	//private String estado;
 	
-	
-	
+	@ManyToOne
+	@JoinColumn ( name = "codigo_cidade")
+	private Cidade cidade;
 
 	public String getNumero() {
 		return numero;
@@ -40,7 +43,23 @@ public class Endereco {
 	public void setCep(String cep) {
 		this.cep = cep;
 	}
-	public String getCidade() {
+	
+	public String getLogradouro() {
+		return logradouro;
+	}
+	public void setLogradouro(String logradouro) {
+		this.logradouro = logradouro;
+	}
+	
+	public Cidade getCidade() {
+		return cidade;
+	}
+	
+	public void setCidade(Cidade cidade) {
+		this.cidade = cidade;
+	}
+	
+	/*public String getCidade() {
 		return cidade;
 	}
 	public void setCidade(String cidade) {
@@ -52,11 +71,6 @@ public class Endereco {
 	public void setEstado(String estado) {
 		this.estado = estado;
 	}
-	public String getLogradouro() {
-		return logradouro;
-	}
-	public void setLogradouro(String logradouro) {
-		this.logradouro = logradouro;
-	}
+	*/
 	
 }

@@ -1,70 +1,78 @@
 package com.example.algamoneyapi.config;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
-import org.springframework.security.access.expression.method.MethodSecurityExpressionHandler;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.config.annotation.web.configuration.EnableResourceServer;
-import org.springframework.security.oauth2.config.annotation.web.configuration.ResourceServerConfigurerAdapter;
-import org.springframework.security.oauth2.config.annotation.web.configurers.ResourceServerSecurityConfigurer;
-import org.springframework.security.oauth2.provider.expression.OAuth2MethodSecurityExpressionHandler;
+import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
+import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.web.SecurityFilterChain;
+
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
+
 
 @Profile("oauth-security")
 @Configuration
-@EnableResourceServer
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true) // habilita a seguranca nos metodos
-public class ResourceServerConfig extends ResourceServerConfigurerAdapter{
-	
-	/*@Autowired
-	private UserDetailsService userDetailsService;
-	
-	//metodo solicitação autenticação básica para acesso as informações
-	/*@Autowired
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.inMemoryAuthentication()
-		.withUser("admin").password("admin").roles("ROLE");
-	}
+public class ResourceServerConfig {
 
-	@Autowired
-	public void configure(AuthenticationManagerBuilder auth) throws Exception {
-		auth.userDetailsService(userDetailsService).passwordEncoder(passwordEncoder());
-	}*/
+    @Bean
+    public SecurityFilterChain defaultSecurityFilterChain(HttpSecurity http) throws Exception {
+        http.authorizeRequests()
+                .antMatchers("/categoria").permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .csrf().disable()
+                .oauth2ResourceServer().jwt().jwtAuthenticationConverter(jwtAuthenticationConverter());
+       
+        return http.formLogin(Customizer.withDefaults()).build();
+    }
 
+    @Bean
+    public JwtDecoder jwtDecoder(JWKSource<SecurityContext> jwkSource) {
+        return OAuth2AuthorizationServerConfiguration.jwtDecoder(jwkSource);
+    }
 
-	@Override
-	public void configure(HttpSecurity http) throws Exception {
-		http.authorizeRequests()
-				.anyRequest().authenticated()  // .antMatchers("/categoria").permitAll() -> permite acesso a opçao cateria sem necessidade de senha
-				.and()
-		.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-		.and()
-		.csrf().disable();
+    @Bean
+    public PasswordEncoder passwordEncoder() {
+        return new BCryptPasswordEncoder();
+    }
+    
+    private JwtAuthenticationConverter jwtAuthenticationConverter() {
+		JwtAuthenticationConverter jwtAuthenticationConverter = new JwtAuthenticationConverter();
+		jwtAuthenticationConverter.setJwtGrantedAuthoritiesConverter(jwt -> {
+			List<String> authorities = jwt.getClaimAsStringList("authorities");
+
+			if (authorities == null) {
+				authorities = Collections.emptyList();
+			}
+
+			JwtGrantedAuthoritiesConverter scopesAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+			Collection<GrantedAuthority> grantedAuthorities = scopesAuthoritiesConverter.convert(jwt);
+
+			grantedAuthorities.addAll(authorities.stream()
+					.map(SimpleGrantedAuthority::new)
+					.collect(Collectors.toList()));
+
+			return grantedAuthorities;
+		});
+
+		return jwtAuthenticationConverter;
 	}
-	
-	@Override
-	public void configure(ResourceServerSecurityConfigurer resources) {
-		resources.stateless(true);
-	}
-	
-	//O objeto que ira realizar a seguranca dos metodos atraves do OAuth2
-	@Bean
-	public MethodSecurityExpressionHandler createExpressionHandler(){
-		return new OAuth2MethodSecurityExpressionHandler();
-	}
-	
-	/*
-	
-	@Bean
-	public UserDetailsService userDetailsService() {
-	    User.UserBuilder builder = User.withDefaultPasswordEncoder();
-	    InMemoryUserDetailsManager manager = new InMemoryUserDetailsManager();
-	    manager.createUser(builder.username("admin").password("admin").roles("ROLE").build());
-	    return manager;
-	}*/
-	
 }
