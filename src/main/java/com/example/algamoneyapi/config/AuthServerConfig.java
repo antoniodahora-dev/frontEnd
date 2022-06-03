@@ -1,15 +1,7 @@
 package com.example.algamoneyapi.config;
 
-import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
-import com.example.algamoneyapi.security.UsuarioSistema;
-import com.nimbusds.jose.JOSEException;
-import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.jose.jwk.KeyUse;
-import com.nimbusds.jose.jwk.RSAKey;
-import com.nimbusds.jose.jwk.gen.RSAKeyGenerator;
-import com.nimbusds.jose.jwk.source.JWKSource;
-import com.nimbusds.jose.proc.SecurityContext;
-
+import java.io.File;
+import java.security.KeyStore;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -22,12 +14,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.OAuth2AuthorizationServerConfiguration;
 import org.springframework.security.core.GrantedAuthority;
-
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.ClientAuthenticationMethod;
 import org.springframework.security.oauth2.jwt.JwtEncoder;
@@ -42,7 +35,12 @@ import org.springframework.security.oauth2.server.authorization.config.ProviderS
 import org.springframework.security.oauth2.server.authorization.config.TokenSettings;
 import org.springframework.security.web.SecurityFilterChain;
 
-import org.springframework.security.crypto.password.PasswordEncoder;
+import com.example.algamoneyapi.config.property.AlgamoneyApiProperty;
+import com.example.algamoneyapi.security.UsuarioSistema;
+import com.nimbusds.jose.jwk.JWKSet;
+import com.nimbusds.jose.jwk.RSAKey;
+import com.nimbusds.jose.jwk.source.JWKSource;
+import com.nimbusds.jose.proc.SecurityContext;
 
 //iremos utilizar apenas essa classe para validar a segurança do OAUTH
 
@@ -141,16 +139,35 @@ public class AuthServerConfig {
 	
 	
 	@Bean //configuração da assinatura do token
-	public JWKSet jwkSet() throws JOSEException {
+	public JWKSet jwkSet() throws Exception {
 		
-		RSAKey rsa = new RSAKeyGenerator(2048) // 2048 é o tamanho da chave
+		/*desta forma geramos a chaves publica e privada dentro do projeto*/
+		/*RSAKey rsa = new RSAKeyGenerator(2048) // 2048 é o tamanho da chave
 				.keyUse(KeyUse.SIGNATURE)
 				.keyID(UUID.randomUUID().toString())
 				.generate();
 		
-		return new JWKSet(rsa); // chave publica e privada
+		return new JWKSet(rsa); // chave publica e privada*/
+		/************************************************************/
+		
+		
+		//vamos gerar as chaves publica e privada fora do projeto
+		File  file = new ClassPathResource("keystore/algamoney.jks").getFile();
+		
+		KeyStore keyStore = KeyStore.Builder.newInstance(file,
+				new KeyStore.PasswordProtection("123456".toCharArray())
+				).getKeyStore();
+		
+		RSAKey rsaKey = RSAKey.load(
+				keyStore, 
+				"algamoney",
+				"123456".toCharArray()
+				);
+		
+		return new JWKSet(rsaKey);
 	}
-	
+
+
 	
 	@Bean //ira ler o JWKSet
 	public JWKSource<SecurityContext> jwkSource(JWKSet jwkSet) {
